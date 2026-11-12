@@ -459,6 +459,19 @@
                             <div class="border-t border-gray-600 pt-4 flex justify-between items-center mb-6">
                                 <span class="font-bold" x-text="'Total PC Cost (' + getAllSelectedPartsDetails().length + ' parts):'"></span><span class="text-2xl font-bold text-green-400" x-text="calculateBuildCost() + ' €'"></span>
                             </div>
+                            <div class="mb-4 text-sm">
+                                <div class="flex flex-wrap items-center gap-2 mb-2">
+                                    <span class="text-gray-300">Στρογγυλοποίηση:</span>
+                                    <template x-for="n in [1, 5, 10]" :key="n"><button type="button" @click="setRoundStep(n)" class="px-3 py-1 rounded border font-bold" :class="(roundStep === n && !(parseFloat(roundCustom) > 0)) ? 'bg-green-500 text-white border-green-500' : 'bg-transparent text-gray-200 border-gray-500'" x-text="'€' + n"></button></template>
+                                    <input type="number" step="0.01" min="0" x-model="roundCustom" placeholder="στόχος €" class="w-24 p-1 rounded text-black text-sm">
+                                    <button type="button" x-show="buildTarget() !== null" @click="roundStep = 0; roundCustom = ''" class="text-red-300 px-2 font-bold" title="Ακύρωση στρογγυλοποίησης">✕</button>
+                                </div>
+                                <div x-show="buildTarget() !== null" class="bg-gray-700 rounded p-2 text-xs text-gray-200 space-y-1">
+                                    <div>Κόστος PC: <b x-text="calculateBuildCost() + ' €'"></b> → <b class="text-green-300" x-text="(buildTarget() || 0).toFixed(2) + ' €'"></b></div>
+                                    <div x-show="roundShift() !== 0 && restUnits() > 0" x-text="(roundShift() > 0 ? 'Αφαιρούνται ' + roundShift().toFixed(2) + '€ από το PC → +' + roundPer().toFixed(2) + '€' : 'Προστίθενται ' + Math.abs(roundShift()).toFixed(2) + '€ στο PC → −' + Math.abs(roundPer()).toFixed(2) + '€') + ' ανά τεμάχιο στα υπόλοιπα ' + restUnits() + ' τεμ. της αποθήκης'"></div>
+                                    <div x-show="roundShift() !== 0 && restUnits() <= 0" class="text-amber-300">Δεν υπάρχουν άλλα τεμάχια στην αποθήκη για να μοιραστεί η διαφορά.</div>
+                                </div>
+                            </div>
                             <div x-show="!canCompleteBuild()" class="text-xs text-red-400 mb-4 text-center" x-text="editingId ? 'Διάλεξε τουλάχιστον ένα part.' : 'Λείπει Μητρική, CPU ή GPU.'"></div>
                             <button @click="completeBuild()" :disabled="!canCompleteBuild()" class="w-full bg-green-500 text-white font-bold py-3 rounded shadow hover:bg-green-600 disabled:opacity-50" x-text="editingId ? '💾 Αποθήκευση αλλαγών' : 'Οριστικοποίηση Κατασκευής'"></button>
                         </div>
@@ -587,6 +600,19 @@
                             </div>
                             <div class="border-t border-gray-600 pt-4 flex justify-between items-center mb-6">
                                 <span class="font-bold" x-text="'Total PC Cost (' + getAllSelectedPartsDetails().length + ' parts):'"></span><span class="text-2xl font-bold text-green-400" x-text="calculateBuildCost() + ' €'"></span>
+                            </div>
+                            <div class="mb-4 text-sm">
+                                <div class="flex flex-wrap items-center gap-2 mb-2">
+                                    <span class="text-gray-300">Στρογγυλοποίηση:</span>
+                                    <template x-for="n in [1, 5, 10]" :key="n"><button type="button" @click="setRoundStep(n)" class="px-3 py-1 rounded border font-bold" :class="(roundStep === n && !(parseFloat(roundCustom) > 0)) ? 'bg-green-500 text-white border-green-500' : 'bg-transparent text-gray-200 border-gray-500'" x-text="'€' + n"></button></template>
+                                    <input type="number" step="0.01" min="0" x-model="roundCustom" placeholder="στόχος €" class="w-24 p-1 rounded text-black text-sm">
+                                    <button type="button" x-show="buildTarget() !== null" @click="roundStep = 0; roundCustom = ''" class="text-red-300 px-2 font-bold" title="Ακύρωση στρογγυλοποίησης">✕</button>
+                                </div>
+                                <div x-show="buildTarget() !== null" class="bg-gray-700 rounded p-2 text-xs text-gray-200 space-y-1">
+                                    <div>Κόστος PC: <b x-text="calculateBuildCost() + ' €'"></b> → <b class="text-green-300" x-text="(buildTarget() || 0).toFixed(2) + ' €'"></b></div>
+                                    <div x-show="roundShift() !== 0 && restUnits() > 0" x-text="(roundShift() > 0 ? 'Αφαιρούνται ' + roundShift().toFixed(2) + '€ από το PC → +' + roundPer().toFixed(2) + '€' : 'Προστίθενται ' + Math.abs(roundShift()).toFixed(2) + '€ στο PC → −' + Math.abs(roundPer()).toFixed(2) + '€') + ' ανά τεμάχιο στα υπόλοιπα ' + restUnits() + ' τεμ. της αποθήκης'"></div>
+                                    <div x-show="roundShift() !== 0 && restUnits() <= 0" class="text-amber-300">Δεν υπάρχουν άλλα τεμάχια στην αποθήκη για να μοιραστεί η διαφορά.</div>
+                                </div>
                             </div>
                             <div x-show="!canCompleteBuild()" class="text-xs text-red-400 mb-4 text-center" x-text="editingId ? 'Διάλεξε τουλάχιστον ένα part.' : 'Λείπει Μητρική, CPU ή GPU.'"></div>
                             <button @click="completeBuild()" :disabled="!canCompleteBuild()" class="w-full bg-green-500 text-white font-bold py-3 rounded shadow hover:bg-green-600 disabled:opacity-50" x-text="editingId ? '💾 Αποθήκευση αλλαγών' : 'Οριστικοποίηση Κατασκευής'"></button>
@@ -956,7 +982,7 @@
         const chipsOf = s => Object.keys(CH).filter(k => CH[k].s === s).map(k => k.toUpperCase());
         function erpApp() {
             return {
-                CATS, SOCKETS, analyse, activeTab: 'spares', PEOPLE: ['Hlias', 'Krempus', 'Mounakos'], avail: {}, calWeek: '', parts: [], devices: [], ai: false, busy: '', msg: '', scanNote: '',
+                CATS, SOCKETS, analyse, activeTab: 'spares', roundStep: 0, roundCustom: '', PEOPLE: ['Hlias', 'Krempus', 'Mounakos'], avail: {}, calWeek: '', parts: [], devices: [], ai: false, busy: '', msg: '', scanNote: '',
                 syncStatus: 'syncing', _pendingCloudSave: false, _saveQueue: Promise.resolve(), _saveVersion: 0,
                 f: {q:'', cat:'', socket:'', ddr:'', grp:''}, salememo: {}, onlyCompat: true, margin: 20, undo: null, pretty, canon,
                 partForm: { category: '', name: '', condition: 'Μεταχειρισμένο', purchasePrice: '', quantity: 1, ch: 2, costTouched: false },
@@ -1198,7 +1224,7 @@
                 disassemblePC(devId) { this.editDevice(devId); },
                 editingDevice() { return this.devices.find(d => d.id === this.editingId) || null; },
                 emptyBuild() { return { Motherboard: '', CPU: '', GPU: '', RAM: [], SSD: [], HDD: [], PSU: '', Case: '', Διάφορα: [] }; },
-                resetBuild() { this.editingId = ''; this.confirmAll = false; this.tempSelections = { RAM: '', SSD: '', HDD: '', Διάφορα: '' }; this.buildParts = this.emptyBuild(); },
+                resetBuild() { this.editingId = ''; this.confirmAll = false; this.roundStep = 0; this.roundCustom = ''; this.tempSelections = { RAM: '', SSD: '', HDD: '', Διάφορα: '' }; this.buildParts = this.emptyBuild(); },
                 editDevice(id) {
                     const d = this.devices.find(x => x.id === id); if (!d) return;
                     const comps = d.components || [];
@@ -1247,15 +1273,23 @@
                     return s;
                 },
                 calculateBuildCost() { return this.getAllSelectedPartsDetails().reduce((t, p) => t + (parseFloat(p.purchasePrice) || 0), 0).toFixed(2); },
+                buildTarget() { const c = parseFloat(this.calculateBuildCost()) || 0, cu = parseFloat(this.roundCustom); if (cu > 0) return cu; if (this.roundStep > 0 && c > 0) return Math.round(c / this.roundStep) * this.roundStep; return null; },
+                roundShift() { const t = this.buildTarget(); return t === null ? 0 : Math.round(((parseFloat(this.calculateBuildCost()) || 0) - t) * 100) / 100; },
+                restUnits() { const ed = this.editingDevice(); return Math.max(0, this.parts.reduce((t, p) => t + (+p.quantity || 0), 0) + (ed ? (ed.components || []).length : 0) - this.getAllSelectedPartsDetails().length); },
+                roundPer() { const n = this.restUnits(); return n > 0 ? Math.round(this.roundShift() / n * 100) / 100 : 0; },
+                setRoundStep(n) { this.roundStep = (this.roundStep === n && !(parseFloat(this.roundCustom) > 0)) ? 0 : n; this.roundCustom = ''; },
+                spreadCost(shift) { const st = this.parts.filter(p => (+p.quantity || 0) > 0), n = st.reduce((t, p) => t + (+p.quantity || 0), 0); if (!n) return 0; const d = Math.round(shift / n * 100) / 100; st.forEach(p => { p.purchasePrice = Math.max(0, Math.round(((parseFloat(p.purchasePrice) || 0) + d) * 100) / 100); }); return d; },
                 canCompleteBuild() { return this.editingId ? this.getAllSelectedPartsDetails().length > 0 : !!(this.buildParts.Motherboard && this.buildParts.CPU && this.buildParts.GPU); },
                 completeBuild() {
                     if (!this.canCompleteBuild()) return;
-                    const comps = JSON.parse(JSON.stringify(this.getAllSelectedPartsDetails())), cost = this.calculateBuildCost(), name = 'Build: ' + comps.map(p => p.name).join(' | '), ed = this.editingDevice();
+                    const comps = JSON.parse(JSON.stringify(this.getAllSelectedPartsDetails())), tgt = this.buildTarget(), shift = this.roundShift(); let cost = this.calculateBuildCost(); if (tgt !== null) cost = tgt.toFixed(2); const name = 'Build: ' + comps.map(p => p.name).join(' | '), ed = this.editingDevice();
                     if (ed) this.returnToStock(ed.components);
                     comps.forEach(c => { const o = this.partById(c.id); if (o) o.quantity = Math.max(0, (+o.quantity || 0) - 1); });
                     if (ed) { ed.components = comps; ed.name = name; ed.cost = cost; this.msg = 'Το PC ενημερώθηκε. Τα parts που αφαίρεσες γύρισαν στην αποθήκη.'; }
                     else this.devices.push({ id: 'PC-' + Date.now(), type: 'Έτοιμο PC', name, cost, status: 'Σε Απόθεμα', components: comps });
+                    let note = ''; if (shift) { const d = this.spreadCost(shift); if (d) note = ` Στρογγυλοποίηση: ${shift > 0 ? '−' : '+'}${Math.abs(shift).toFixed(2)}€ στο PC, ${d > 0 ? '+' : '−'}${Math.abs(d).toFixed(2)}€ ανά τεμάχιο στα υπόλοιπα parts.`; }
                     this.saveData(); this.resetBuild(); if (ed) this.activeTab = 'devices';
+                    if (note) { this.msg = (this.msg || 'Το PC καταχωρίστηκε.') + note; clearTimeout(this._mt); this._mt = setTimeout(() => this.msg = '', 6000); }
                 },
                 compat() {
                     const o = [], M = this.pick('Motherboard'), C = this.pick('CPU'), G = this.pick('GPU'), P = this.pick('PSU'), t = (t, m) => o.push({t, m});
